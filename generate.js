@@ -5,9 +5,8 @@ const outputFile = "tasks.json";
 
 const content = fs.readFileSync(inputFile, "utf8");
 
-const pages = content.match(
-  /--- PAGE START ---[\s\S]*?--- PAGE END ---/g
-) || [];
+const pages =
+  content.match(/--- PAGE START ---[\s\S]*?--- PAGE END ---/g) || [];
 
 const tasks = pages.map((page, index) => {
   const titleMatch = page.match(/#TITLE:\s*(.+)/);
@@ -16,15 +15,18 @@ const tasks = pages.map((page, index) => {
     ? titleMatch[1].trim()
     : String(index + 1);
 
-  let text = page
+  const text = page
     .replace(/--- PAGE START ---/, "")
     .replace(/--- PAGE END ---/, "")
     .replace(/#TITLE:.+/, "")
     .trim();
 
+  const fileNumber = String(index + 1).padStart(3, "0");
+
   return {
     id: index + 1,
     title,
+    audio: `/audio/d_${fileNumber}.mp3`,
     text
   };
 });
